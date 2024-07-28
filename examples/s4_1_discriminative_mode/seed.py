@@ -12,6 +12,9 @@ from typing import Any, Optional, List
 import omegaconf
 from omegaconf import OmegaConf
 
+import warnings
+warnings.filterwarnings("ignore")
+
 SEEDS = [0, 1, 2, 3, 4, 5, 6]
 
 class RunInfo:
@@ -102,7 +105,7 @@ class run:
         ) as f:
             # top5 = numpy.sort(best)[1:] 
             top5 = numpy.sort(best)[2:] 
-            json.dump({
+            _j = {
                 "accuracies": accuracies,
                 "avg": numpy.mean(best),
                 "std": numpy.std(best),
@@ -110,4 +113,6 @@ class run:
                 "avg5": numpy.mean(top5),
                 # "std5": numpy.std(best),
                 "std5": numpy.std(top5)
-            }, f, indent=4)
+            }
+            print(_j)
+            json.dump(_j, f, indent=4)

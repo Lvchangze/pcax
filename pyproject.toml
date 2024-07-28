@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "pcx"
+name = "pcax"
 version = "0.6.1-public"
-packages = [{ include = "pcax" }]
+packages = [{ include = "pcax"}]
 description = "A library for efficient Predictive Coding networks."
 authors = ["Luca Pinchetti <luca.pinchetti@cs.ox.ac.uk>"]
 repository = "https://github.com/liukidar/pcax"
@@ -28,9 +28,9 @@ name = "torch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 priority = "explicit"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+# [build-system]
+# requires = ["poetry-core"]
+# build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 python = "^3.10"

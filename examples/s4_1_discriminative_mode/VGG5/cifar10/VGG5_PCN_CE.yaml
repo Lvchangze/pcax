@@ -1,7 +1,9 @@
 
 hp:
   T: 8
-  act_fn: gelu
+  # T: 80
+  # act_fn: gelu
+  act_fn: hard_tanh
   batch_size: 128
   beta: 1.0
   beta_factor: 1.0

@@ -16,8 +16,8 @@ import pcax.predictive_coding as pxc
 import pcax.nn as pxnn
 import pcax.utils as pxu
 import pcax.functional as pxf
-from omegacli import OmegaConf
-
+from omegaconf import OmegaConf
+from tqdm import tqdm
 
 import json
 import copy
@@ -285,7 +285,7 @@ def main(run_info):
     
     best_accuracy = 0
     accuracies = []
-    for e in range(nm_epochs):
+    for e in tqdm(range(nm_epochs)):
         beta = run_info["hp/beta_factor"] * (run_info["hp/beta"] + run_info["hp/beta_ir"]*e)
         if abs(beta) >= 1.0:
             beta = 1.0
@@ -295,6 +295,7 @@ def main(run_info):
         
         if a > best_accuracy:
             best_accuracy = a
+            print(best_accuracy)
 
     del train_dataloader
     del test_dataloader

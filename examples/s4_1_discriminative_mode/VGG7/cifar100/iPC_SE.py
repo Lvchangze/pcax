@@ -16,8 +16,8 @@ import pcax.predictive_coding as pxc
 import pcax.nn as pxnn
 import pcax.utils as pxu
 import pcax.functional as pxf
-from omegacli import OmegaConf
-
+from omegaconf import OmegaConf
+from tqdm import tqdm
 
 import json
 import copy
@@ -250,7 +250,7 @@ def eval_on_batch(x: jax.Array, y: jax.Array, *, model: ConvNet):
 
 def train(dl, T, *, model: ConvNet, optim_w: pxu.Optim, optim_h: pxu.Optim, beta: float = 1.0):
     
-    for i, (x, y) in enumerate(dl):
+    for i, (x, y) in tqdm(enumerate(dl)):
         train_on_batch(
             T, x, jax.nn.one_hot(y, model.nm_classes.get()), model=model, optim_w=optim_w, optim_h=optim_h, beta=beta
         )
@@ -277,7 +277,7 @@ def main(run_info):
     model = ConvNet(
         nm_classes=100, 
         act_fn=getattr(jax.nn, run_info["hp/act_fn"]))
-    
+    print(model)
     train_dataloader, test_dataloader = get_dataloaders(batch_size)
 
     with pxu.step(model, pxc.STATUS.INIT, clear_params=pxc.VodeParam.Cache):
@@ -304,7 +304,7 @@ def main(run_info):
     best_accuracy5 = 0
     accuracies = []
     accuracies5 = []
-    for e in range(nm_epochs):
+    for e in tqdm(range(nm_epochs)):
         beta = run_info["hp/beta_factor"] * (run_info["hp/beta"] + run_info["hp/beta_ir"]*e)
         if abs(beta) >= 1.0:
             beta = 1.0

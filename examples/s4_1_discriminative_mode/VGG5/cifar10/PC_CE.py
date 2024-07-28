@@ -16,8 +16,9 @@ import pcax.predictive_coding as pxc
 import pcax.nn as pxnn
 import pcax.utils as pxu
 import pcax.functional as pxf
-from omegacli import OmegaConf
+from omegaconf import OmegaConf
 
+from tqdm import tqdm
 
 import json
 import copy
@@ -210,12 +211,12 @@ def train_on_batch(T: int, x: jax.Array, y: jax.Array, *, model: ConvNet, optim_
     optim_h.init(pxu.Mask(pxc.VodeParam)(model))
 
     # Inference steps
-    for _ in range(T):
+    for t in range(T):
         with pxu.step(model, clear_params=pxc.VodeParam.Cache):
             _, g = pxf.value_and_grad(pxu.Mask(pxu.m(pxc.VodeParam).has_not(frozen=True), [False, True]), has_aux=True)(
                 energy
             )(x, model=model)
-
+            # print(f"t {t}, g {g}")
         optim_h.step(model, g["model"], True)
     optim_h.clear()
 
@@ -286,7 +287,7 @@ def main(run_info):
     
     best_accuracy = 0
     accuracies = []
-    for e in range(nm_epochs):
+    for e in tqdm(range(nm_epochs)):
         beta = run_info["hp/beta_factor"] * (run_info["hp/beta"] + run_info["hp/beta_ir"]*e)
         if abs(beta) >= 1.0:
             beta = 1.0
@@ -296,6 +297,7 @@ def main(run_info):
         
         if a > best_accuracy:
             best_accuracy = a
+            print(best_accuracy)
 
     del train_dataloader
     del test_dataloader
@@ -312,4 +314,5 @@ if __name__ == "__main__":
     run_info = seed.RunInfo(
         OmegaConf.load(sys.argv[1])
     )
+    # print(run_info)
     seed.run(main)(run_info)
