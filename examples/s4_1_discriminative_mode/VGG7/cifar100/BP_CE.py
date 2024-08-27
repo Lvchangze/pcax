@@ -15,7 +15,7 @@ import pcax as px
 import pcax.nn as pxnn
 import pcax.utils as pxu
 import pcax.functional as pxf
-from omegacli import OmegaConf
+from omegaconf import OmegaConf
 
 
 
